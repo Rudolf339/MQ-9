@@ -1,5 +1,12 @@
 # turn off hud in views
-setlistener("/sim/current-view/view-number", func(n) { setprop("/sim/hud/visibility[1]", n.getValue() == 8) },1);
+setlistener("/sim/current-view/view-number-raw", func(n) {
+    var view = n.getValue();
+    if (view == 0 or view == 100) {
+	setprop("/sim/hud/visibility[1]", 1);
+    } else {
+	setprop("/sim/hud/visibility[1]", 0);
+    }
+},1);
 
 #var fast_loop = func {
 #  var viewName = getprop("/sim/current-view/name"); 

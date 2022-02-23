@@ -8,7 +8,7 @@
 
 
 ############################ Config ########################################################################################
-var full_damage_dist_m = 1.5;# Can vary from aircraft to aircraft depending on how many failure modes it has.
+var full_damage_dist_m = 3;# Can vary from aircraft to aircraft depending on how many failure modes it has.
                            # Many modes (like Viggen) ought to have lower number like zero.
                            # Few modes (like F-14) ought to have larger number such as 3.
                            # For assets this should be average radius of the asset.
@@ -18,7 +18,7 @@ var hitable_by_air_munitions = 1;   # if anti-air can do damage
 var hitable_by_cannon = 1;          # if cannon can do damage
 #var hitable_by_ground_munitions = 1;# if anti-ground/marine can do damage
 var is_fleet = 0;  # Is really 7 ships, 3 of which has offensive missiles.
-var rwr_to_screen=0; # for aircraft that do not yet have proper RWR
+var rwr_to_screen=1; # for aircraft that do not yet have proper RWR
 var tacview_supported=0; # For aircraft with tacview support
 var m28_auto=0; # only used by automats
 var mlw_max=2.25; # 
@@ -37,24 +37,30 @@ var shells = {
     # 0.20 means a direct hit will disable 20% of the failure modes on average.
     # or, 0.20 also means a direct hit can do 20 hitpoints damage.
     #
-    "M70 rocket":        [0,0.250], #135mm
-    "S-5 rocket":        [1,0.200], # 55mm
-    "M55 shell":         [2,0.100], # 30mm
-    "KCA shell":         [3,0.100], # 30mm
-    "GSh-30":            [4,0.100], # 30mm mig29/su27
-    "GAU-8/A":           [5,0.100], # 30mm
-    "Mk3Z":              [6,0.100], # 30mm Jaguar
-    "BK27":              [7,0.070], # 27mm
-    "GSh-23":            [8,0.065], # 23mm
-    "M61A1 shell":       [9,0.050], # 20mm F14, F15, F16
-    "50 BMG":            [10,0.015], # 12.7mm (non-explosive)    
+    # Damage roughly proportional to projectile weight.
+    # If weight isn't listed here, it was estimated from dimensions (proportional to diameter^2 * length).
+    # Approximate formulae for cannons:
+    # damage ~ weight / 3.6 (in g)
+    # or damage ~ diameter^2 * length / 1.6e6 (in mm)
+    #
+    "M70 rocket":        [0,0.500], # 135mm, ~5kg warhead
+    "S-5 rocket":        [1,0.200], # 55mm, ~1-2kg warhead
+    "M55 shell":         [2,0.060], # 30x113mm, 220g
+    "KCA shell":         [3,0.100], # 30x173mm, 360g
+    "GSh-30":            [4,0.095], # 30x165mm mig29/su27
+    "GAU-8/A":           [5,0.100], # 30x173mm, 360g
+    "Mk3Z":              [6,0.060], # 30x113mm Jaguar, 220g
+    "BK27":              [7,0.070], # 27x145mm, 270g
+    "GSh-23":            [8,0.040], # 23x115mm,
+    "M61A1 shell":       [9,0.030], # 20x102mm F14, F15, F16, 100g
+    "50 BMG":            [10,0.015], # 12.7mm (non-explosive)
     "7.62":              [11,0.005], # 7.62mm (non-explosive)
-    "Hydra-70":          [12,0.250], # F-16/A-6 LAU-68 and LAU-61
-    "SNEB":              [13,0.250], # Jaguar   
-    "DEFA 554":          [14,0.100], # 30mm Mirage
-    "20mm APDS":         [15,0.050], # CIWS
-    "LAU-10":            [16,0.225], # 127mm
-};    
+    "Hydra-70":          [12,0.500], # 70mm, F-16/A-6 LAU-68 and LAU-61, ~4-6kg warhead
+    "SNEB":              [13,0.500], # 68mm, Jaguar
+    "DEFA 554":          [14,0.060], # 30x113mm Mirage, 220g
+    "20mm APDS":         [15,0.030], # CIWS
+    "LAU-10":            [16,0.500], # 127mm, ~4-7kg warhead
+};
 
 # lbs of warheads is explosive+fragmentation+fuse, so total warhead mass.
 
@@ -120,7 +126,7 @@ var warheads = {
     "AIM-9L":            [57,   20.80,0,0],
     "AGM-65D":           [58,  126.00,1,0],
     "AIM-132":           [59,   22.05,0,0],
-    "d-8":               [60,   20.80,0,0],#deprecated
+    "Apache AP":         [60,  110.23,0,1],# Real mass of bomblet. (x 10). Anti runway.
     "KN-06":             [61,  315.00,0,0],
     "9M317":             [62,  145.00,0,0],
     "d9":                [63,   27.00,0,0],#deprecated 

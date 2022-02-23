@@ -24,9 +24,9 @@
 		<minimum-fg-version>2018.2</minimum-fg-version>
 	
 	    <model>
-			<path>Aircraft/MQ-9/Models/MQ-9.xml</path>
-			<livery>
-				<file type="string"/>
+		<path>Aircraft/MQ-9/Models/MQ-9.xml</path>
+		<livery>
+		    <file type="string"/>
 			</livery>
 			<turret n="0">
         		<heading>0</heading>
@@ -36,12 +36,19 @@
 	            <gender>1</gender>
 	            <altitude-ft>-5.0</altitude-ft>
 	        </walker>
-            <map>
-                <default_exit>
-                    <x-offset-m type="float">-0.35</x-offset-m>
+		<map>
+                    <default_exit>
+			<x-offset-m type="float">-0.35</x-offset-m>
                     <y-offset-m type="float">-0.84</y-offset-m>
-                </default_exit>
-            </map>
+                    </default_exit>
+		</map>
+		<MFD-color>
+		    <text1>
+			<red type="double">0</red>
+			<green type="double">1</green>
+			<blue type="double">0</blue>
+		    </text1>
+		</MFD-color>
 	    </model>
 		
 		<submodels>
@@ -126,7 +133,6 @@
 				<x-offset-m archive="y">  0.0000 </x-offset-m>
 				<y-offset-m archive="y"> -0.2792 </y-offset-m>
 				<z-offset-m archive="y"> -4.3564 </z-offset-m>
-				<default-field-of-view-deg> 70 </default-field-of-view-deg>
 				<limits>
 					<left>
 						<heading-max-deg>-179</heading-max-deg>
@@ -230,13 +236,15 @@
 			
 		</help>
 		
-	</sim>
-
+	</sim>	
+		
 	<!-- MP Damage -->
 
 	<payload>
 		<armament>
-			<msg type="bool">true</msg>
+		    <msg type="bool">true</msg>
+		    <models type="string">Aircraft/MQ-9/Models/Armament/Weapons</models>
+		    <MLW-count type="int">0</MLW-count>
 		</armament>
 	</payload>
 	
@@ -406,24 +414,40 @@
 				</binding>
        		</key>
 
-			<key n="76">
-          		<name>Shift-L</name>
-          		<desc>LightsToggle</desc>
-          		<binding>
-        			<command>property-toggle</command>
-        			<property>/controls/lighting/nav-lights-switch</property>
-				</binding>
-				<binding>
-        			<command>property-toggle</command>
-        			<property>/controls/lighting/beacon-switch</property>
-				</binding>
-				<binding>
-        			<command>property-toggle</command>
-        			<property>/controls/lighting/strobe-switch</property>
-				</binding>
+		<key n="76">
+          	    <name>Shift-L</name>
+          	    <desc>LightsToggle</desc>
+          	    <binding>
+        		<command>property-toggle</command>
+        		<property>/controls/lighting/nav-lights-switch</property>
+		    </binding>
+		    <binding>
+        		<command>property-toggle</command>
+        		<property>/controls/lighting/beacon-switch</property>
+			</binding>
+			<binding>
+        		    <command>property-toggle</command>
+        		    <property>/controls/lighting/strobe-switch</property>
+			</binding>
        		</key>
 
-		</keyboard>
+		<key n="108">
+		    <name>l</name>
+		    <desc>Lock FLIR</desc>
+		    <binding>
+			<command>property-assign</command>
+			<property>controls/displays/cursor-click</property>
+			<value>1</value>
+		    </binding>
+		    <mod-up>
+			<binding>
+			    <command>property-assign</command>
+			    <property>controls/displays/cursor-click</property>
+			    <value>1</value>
+			</binding>
+		    </mod-up>
+		</key>
+	    </keyboard>
 	</input>
 	
 	<!-- Engine -->
@@ -442,6 +466,9 @@
 		<gear>
 			<brake-parking type="double">1</brake-parking>
 		</gear>
+		<display>
+		    <cursor-click type="bool">false</cursor-click>
+		</display>
 	</controls>
 	
 	<!-- Systems -->
@@ -453,6 +480,13 @@
 				<comm n="1" type="float">28</comm>
 			</outputs>
 		</electrical>
+		
+		<tgp>
+		    <lat type="double">0</lat>
+		    <lon type="double">0</lon>
+		    <alt type="double">0</alt>
+		    <lock type="bool">false</lock>
+		</tgp>
 	</systems>
 	
 	<!-- Instrumentation -->
@@ -527,7 +561,11 @@
 	<!-- Nasal -->
 		
 	<nasal>
-		
+	    <notifications>
+		<file>Aircraft/MQ-9/Nasal/ArmamentNotification.nas</file>
+		<file>Aircraft/MQ-9/Nasal/GeoBridgedTransmitter.nas</file>
+	    </notifications>
+	    
 		<Liveries>
 			<file>Aircraft/MQ-9/Nasal/Liveries.nas</file>
 		</Liveries>
@@ -580,7 +618,20 @@
 		<damage>
 			<file>Aircraft/MQ-9/Nasal/damage.nas</file>
 		</damage>
+
 		
+		<radardist>
+		    <file>Aircraft/Instruments-3d/radardist/radardist.nas</file>
+		</radardist>
+		<math_ext>
+		    <file>Aircraft/c172p/Nasal/generic/math_ext.nas</file>
+		</math_ext>
+		<armament>
+		    <file>Aircraft/f16/Nasal/missile-code.nas</file><!-- must be before station-manager -->
+		</armament>
+		<flir>
+		    <file>Aircraft/MQ-9/Nasal/flir.nas</file>
+		</flir>
 	</nasal>
  
 </PropertyList>
